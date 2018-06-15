@@ -1,0 +1,125 @@
+<project name="Ganji" default="default" basedir=".">
+
+	  <description>
+	  	 NFC Printer
+	    </description>
+
+	  <tstamp prefix="start"/>
+
+	  <!-- system properties to use -->
+	  <property name= "cr" value="${line.separator}"/> 
+		
+	  <!-- set global properties for this build -->
+	
+	  <property name="src"        			location="src"/> 
+	  <property name="classes"        		location="classes"/> 
+	  <property name="lib"        			location="lib"/>
+	  <property name="distrib"        		location="distrib"/>
+	  <property name="doc"        		location="doc"/>
+	  
+	  <target name="init" description="create timestamp and directories">
+    	<echo>Init...</echo>
+	  	
+	    <tstamp/>
+	    <mkdir dir="${classes}"/>
+	    <mkdir dir="${lib}"/>
+	    <mkdir dir="${distrib}"/>
+	    <mkdir dir="${doc}"/>
+	  </target>
+
+	  <!--
+	       ==========================
+	            Compile the code
+	       ==========================
+	  -->
+
+	  <target name="compile" depends="init" description="compile the source " >
+	  	<echo>Compiling...</echo>
+	    <javac srcdir="${src}" 
+	    	   destdir="${classes}"  debug="on" debuglevel="lines,vars,source">
+
+	    	<classpath id="cpath">
+				<fileset dir="${lib}" 		includes="*.jar"/>
+					</classpath>
+	    </javac>
+	  </target>
+	
+	  <!-- ==========================
+	          Copy additional files
+	       ==========================
+	  -->
+
+	  <target name="copy" depends="compile" description="copy images etc to classes directory" >
+	  	<echo>Copying...</echo>
+	    <copy todir="${classes}">
+	    	<fileset 
+	    		dir="${src}" 
+	    		includes="**/*.png,**/*.xml,**/*.properties"/>
+	  	</copy>
+	  
+    </target>
+			
+	  <!--
+	       ==========================
+	                library
+	       ==========================
+	  -->
+		
+	  <target name="lib" depends="compile, copy" description="generate the jar">
+	  	<echo>Generating the Jasper Reporting library kettle-ganji.jar ...</echo>
+	  	<jar 
+	    	jarfile="${lib}/nfcprinter1.0.jar" 
+	    	basedir="${classes}" 
+	    	includes="**/*"/>	 
+	  </target>
+
+	  <!--
+	       ==========================
+	           distrib for plugin
+	       ==========================
+	  -->
+
+	  <target name="distrib" depends="lib,doc" description="Create the distribution package..." >
+	  	<echo>Copying libraries to distrib directory...</echo>
+	    <copy todir="${distrib}">
+	    	<fileset 
+	    		dir="${lib}" 
+	    		includes="**/*.jar"/>
+	  	</copy>
+	  	
+     	<copy todir="${distrib}">
+	    	<fileset 
+	    		dir="." 
+	    		includes="*.properties,*.bat"/>
+	  	</copy>
+	  </target>
+
+	<!--
+	       ==========================
+	          Default target: all
+	       ==========================
+	  -->
+	<target name="default" depends="clean,distrib" description="default = build all"/>
+
+	<!--
+	       ==========================
+	              C L E A N
+	       ==========================
+	  -->
+
+	  <target name="clean"  description="clean up generated files" >
+	    <delete dir="${classes}"/>
+	    <delete dir="${doc}"/>
+	    <delete dir="${distrib}"/>
+	  </target>
+	
+	<target name="doc" depends="init" description="generate documentation">
+    <javadoc sourcepath="${src}" destdir="${doc}"/>
+    <copy todir="${distrib}/doc">
+	    	<fileset 
+	    		dir="${doc}" 
+	    		includes="**/*.*"/>
+	  	</copy>
+  </target>
+  
+</project>

@@ -1,0 +1,9 @@
+com.aofei.nfc.ndef
+com.aofei.nfc.ndef.decorder
+com.aofei.nfc.ndef.encorder
+com.aofei.nfc.ndef.records
+com.aofei.nfc.ndef.records.handover
+com.aofei.nfc.tag.utils
+com.aofei.nfc.utils
+com.aofei.nfcprinter
+com.aofei.utils
